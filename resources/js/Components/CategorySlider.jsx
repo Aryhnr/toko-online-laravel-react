@@ -27,6 +27,7 @@ export default function CategorySlider({ categories }) {
 
                         opacity-0 group-hover:opacity-100
                         pointer-events-none group-hover:pointer-events-auto
+                        cursor-pointer
                     "
                 >
                     ‹
@@ -46,6 +47,7 @@ export default function CategorySlider({ categories }) {
 
                         opacity-0 group-hover:opacity-100
                         pointer-events-none group-hover:pointer-events-auto
+                        cursor-pointer
                     "
                 >
                     ›

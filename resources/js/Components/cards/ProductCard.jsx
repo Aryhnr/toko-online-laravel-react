@@ -36,13 +36,16 @@ export default function ProductCard({ product }) {
                     {product.name}
                 </h3>
 
-                <p className="text-xs text-gray-500 mt-1">{product.category}</p>
+                {/* ✅ FIX DI SINI */}
+                <p className="text-xs text-gray-500 mt-1">
+                    {product.category?.name}
+                </p>
 
+                {/* ✅ FORMAT HARGA */}
                 <p className="mt-2 font-bold text-[#E9445A]">
-                    Rp {product.price}
+                    Rp {product.price.toLocaleString("id-ID")}
                 </p>
             </div>
         </div>
     );
 }
-
