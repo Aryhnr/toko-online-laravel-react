@@ -1,10 +1,10 @@
-import Navbar from "@/Components/Navbar";
+import Navbar from "@/Components/navbar/Navbar";
 import SearchBar from "../Components/SearchBar";
 
 export default function GuestLayout({ children }) {
     return (
         <div className="min-h-screen bg-gray-50 font-sans">
-            <Navbar />
+            <Navbar/>
             <SearchBar mobile />
             <main className="max-w-7xl mx-auto px-6 py-8 pb-20 md:pb-8">
                 {children}

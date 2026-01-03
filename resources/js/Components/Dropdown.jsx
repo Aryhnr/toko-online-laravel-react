@@ -1,47 +1,28 @@
-import { useEffect, useRef, useState } from "react";
-
 export default function Dropdown({ trigger, children, align = "right" }) {
-    const [open, setOpen] = useState(false);
-    const dropdownRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(e.target)
-            ) {
-                setOpen(false);
-            }
-        };
-
-        document.addEventListener("click", handleClickOutside);
-        return () => document.removeEventListener("click", handleClickOutside);
-    }, []);
-
-    const alignment =
-        align === "left"
-            ? "left-0 origin-top-left"
-            : "right-0 origin-top-right";
+    const alignment = align === "left" ? "left-0" : "right-0";
 
     return (
-        <div ref={dropdownRef} className="relative inline-block text-left">
+        <div className="relative inline-block group">
             {/* Trigger */}
-            <button
-                type="button"
-                onClick={() => setOpen(!open)}
-                className="focus:outline-none"
-            >
-                {trigger}
-            </button>
+            <div className="cursor-pointer select-none">{trigger}</div>
+
+            {/* HOVER BRIDGE (transparan, tapi aktif) */}
+            <div className="absolute left-0 right-0 top-full h-3"></div>
 
             {/* Menu */}
-            {open && (
-                <div
-                    className={`absolute z-50 mt-2 w-48 rounded-md bg-white border shadow-lg ${alignment}`}
-                >
-                    <div className="py-1">{children}</div>
-                </div>
-            )}
+            <div
+                className={`
+                    absolute top-full mt-3 z-50 w-48
+                    rounded-md bg-white border border-gray-200 shadow-lg
+                    opacity-0 invisible
+                    group-hover:opacity-100 group-hover:visible
+                    pointer-events-none group-hover:pointer-events-auto
+                    transition duration-150
+                    ${alignment}
+                `}
+            >
+                <div className="py-1">{children}</div>
+            </div>
         </div>
     );
 }

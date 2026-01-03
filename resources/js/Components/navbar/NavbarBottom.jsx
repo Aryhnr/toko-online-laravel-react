@@ -1,8 +1,8 @@
 import { Link, usePage } from "@inertiajs/react";
-import HomeIcon from "../Icons/Home";
-import CategoryIcon from "../Icons/Category";
-import CartIcon from "../Icons/Cart";
-import AccountIcon from "../Icons/Account";
+import HomeIcon from "@/Icons/Home";
+import CategoryIcon from "@/Icons/Category";
+import CartIcon from "@/Icons/Cart";
+import AccountIcon from "@/Icons/Account";
 
 export default function NavbarBottom() {
     const { url } = usePage();

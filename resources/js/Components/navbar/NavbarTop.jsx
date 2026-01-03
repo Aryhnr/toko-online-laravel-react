@@ -1,17 +1,16 @@
 import { Link, usePage } from "@inertiajs/react";
-import Dropdown from "./Dropdown";
-import SearchBar from "./SearchBar";
-import CategoryIcon from "../Icons/Category";
-import CartIcon from "../Icons/Cart";
-import AccountIcon from "../Icons/Account";
+import Dropdown from "@/Components/Dropdown";
+import SearchBar from "@/Components/SearchBar";
+
+import CategoryIcon from "@/Icons/Category";
+import UserMenu from "./UserMenu";
+import AuthMenu from "./AuthMenu";
+
 
 export default function NavbarTop() {
-    const { url } = usePage();
-
-    const isActive = (path) =>
-        url === path
-            ? "text-blue-600 font-semibold"
-            : "text-gray-700 hover:text-blue-600";
+    
+    const { props } = usePage();
+    const user = props.auth?.user;
 
     return (
         <nav className="hidden md:block sticky top-0 z-50 shadow-2xs">
@@ -98,32 +97,15 @@ export default function NavbarTop() {
                     </Dropdown>
                     <SearchBar />
                 </div>
-
-                <div className="flex items-center gap-3">
-                    {/* Cart */}
-                    <Link
-                        href="/cart"
-                        className="flex items-center justify-center
-                        w-10 h-10 rounded-md
-                        bg-gray-100 text-gray-700
-                        hover:bg-gray-200 hover:text-[#71C9CE]
-                        transition"
-                    >
-                        <CartIcon className="w-5 h-4" />
-                    </Link>
-                    {/* User / Login */}
-                    <Link
-                        href="/login"
-                        className="flex items-center justify-center
-                        w-10 h-10 rounded-md
-                        bg-gray-100 text-gray-700
-                        hover:bg-gray-200 hover:text-[#71C9CE]
-                        transition"
-                    >
-                        <AccountIcon className="w-5 h-5" />
-                    </Link>
-                </div>
+                {/* AUTH AREA */}
+                {user ? <UserMenu/> : <AuthMenu/>}
             </div>
         </nav>
     );
 }
+// const { url } = usePage();
+
+    // const isActive = (path) =>
+    //     url === path
+    //         ? "text-blue-600 font-semibold"
+    //         : "text-gray-700 hover:text-blue-600";
