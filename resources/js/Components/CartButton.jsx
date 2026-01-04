@@ -8,7 +8,7 @@ export default function CartButton() {
             className="flex items-center justify-center
                        w-10 h-10 rounded-md
                        bg-gray-100 text-gray-700
-                       hover:bg-gray-200 hover:text-[#71C9CE]
+                       hover:bg-gray-200 hover:text-[#DDA853]
                        transition"
         >
             <CartIcon className="w-5 h-5" />

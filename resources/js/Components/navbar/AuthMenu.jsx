@@ -16,7 +16,7 @@ export default function AuthMenu() {
                             flex items-center justify-center
                             w-10 h-10 rounded-md
                             bg-gray-100 text-gray-700
-                            hover:bg-gray-200 hover:text-[#71C9CE]
+                            hover:bg-gray-200 hover:text-[#DDA853]
                             transition cursor-pointer
                         "
                     >
@@ -31,7 +31,7 @@ export default function AuthMenu() {
                             w-full flex items-center gap-3
                             px-4 py-2.5 text-sm
                             text-gray-700
-                            hover:bg-gray-100 hover:text-[#71C9CE]
+                            hover:bg-gray-100 hover:text-[#DDA853]
                             transition
                         "
                     >
@@ -45,7 +45,7 @@ export default function AuthMenu() {
                             w-full flex items-center gap-3
                             px-4 py-2.5 text-sm
                             text-gray-700
-                            hover:bg-gray-100 hover:text-[#71C9CE]
+                            hover:bg-gray-100 hover:text-[#DDA853]
                             transition
                         "
                     >

@@ -36,8 +36,14 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
 */
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
+    ->name('admin.')
     ->group(function () {
+
         Route::get('/dashboard', fn () =>
             Inertia::render('Admin/Dashboard')
-        )->name('admin.dashboard');
+        )->name('dashboard');
+
+        Route::resource('/products', ProductController::class);
+        Route::resource('/categories', CategoryController::class);
     });
+

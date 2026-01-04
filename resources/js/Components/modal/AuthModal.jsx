@@ -27,8 +27,8 @@ export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
         <BaseModal show={show} onClose={onClose}>
             {/* Header */}
             <div className="px-6 pt-6 text-center">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#CBF1F5]">
-                    <AccountIcon className="h-6 w-6 text-[#71C9CE]" />
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#f3d9ab]">
+                    <AccountIcon className="h-6 w-6 text-[#d89324]" />
                 </div>
 
                 <h2 className="text-xl font-semibold text-gray-800">
@@ -51,7 +51,7 @@ export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
                             placeholder="Nama Lengkap"
                             value={data.name}
                             onChange={(e) => setData("name", e.target.value)}
-                            className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/30 outline-none"
+                            className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#DDA853] focus:ring-2 focus:ring-[#DDA853]/30 outline-none"
                         />
                         {errors.name && (
                             <p className="mt-1 text-xs text-red-500">
@@ -67,7 +67,7 @@ export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
                         placeholder="Email"
                         value={data.email}
                         onChange={(e) => setData("email", e.target.value)}
-                        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/30 outline-none"
+                        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#DDA853] focus:ring-2 focus:ring-[#DDA853]/30 outline-none"
                     />
                     {errors.email && (
                         <p className="mt-1 text-xs text-red-500">
@@ -82,7 +82,7 @@ export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
                         placeholder="Password"
                         value={data.password}
                         onChange={(e) => setData("password", e.target.value)}
-                        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/30 outline-none"
+                        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#DDA853] focus:ring-2 focus:ring-[#DDA853]/30 outline-none"
                     />
                     {errors.password && (
                         <p className="mt-1 text-xs text-red-500">
@@ -100,7 +100,7 @@ export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
                             onChange={(e) =>
                                 setData("password_confirmation", e.target.value)
                             }
-                            className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/30 outline-none"
+                            className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#DDA853] focus:ring-2 focus:ring-[#DDA853]/30 outline-none"
                         />
                     </div>
                 )}
@@ -109,7 +109,7 @@ export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
                 <button
                     type="submit"
                     disabled={processing}
-                    className="w-full rounded-md bg-[#71C9CE] py-2.5 text-sm font-medium text-white hover:bg-[#5bb8bd] transition disabled:opacity-60"
+                    className="w-full rounded-md bg-[#DDA853] py-2.5 text-sm font-medium text-white hover:bg-[#5bb8bd] transition disabled:opacity-60"
                 >
                     {isLogin ? "Login" : "Register"}
                 </button>
@@ -130,7 +130,7 @@ export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
                             reset();
                             onSwitch();
                         }}
-                        className="font-medium text-[#71C9CE] hover:underline"
+                        className="font-medium text-[#DDA853] hover:underline"
                     >
                         {isLogin ? "Register" : "Login"}
                     </button>
