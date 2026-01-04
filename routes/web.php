@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -43,7 +44,17 @@ Route::middleware(['auth', 'role:admin'])
             Inertia::render('Admin/Dashboard')
         )->name('dashboard');
 
-        Route::resource('/products', ProductController::class);
-        Route::resource('/categories', CategoryController::class);
+        // Route::resource('/products', ProductController::class);
+        Route::get('/categories', [CategoryController::class, 'index'])
+            ->name('categories.index');
+
+        Route::post('/categories', [CategoryController::class, 'store'])
+            ->name('categories.store');
+
+        Route::put('/categories/{category}', [CategoryController::class, 'update'])
+            ->name('categories.update');
+
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
+            ->name('categories.destroy');
     });
 
