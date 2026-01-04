@@ -1,8 +1,27 @@
 import BaseModal from "./BaseModal";
 import AccountIcon from "@/Icons/Account";
+import { useForm } from "@inertiajs/react";
 
 export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
     const isLogin = type === "login";
+
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
+    });
+
+    const submit = (e) => {
+        e.preventDefault();
+
+        post(isLogin ? "/login" : "/register", {
+            onSuccess: () => {
+                reset();
+                onClose();
+            },
+        });
+    };
 
     return (
         <BaseModal show={show} onClose={onClose}>
@@ -24,67 +43,73 @@ export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
             </div>
 
             {/* Form */}
-            <div className="px-6 py-6 space-y-4">
+            <form onSubmit={submit} className="px-6 py-6 space-y-4">
                 {!isLogin && (
-                    <input
-                        type="text"
-                        placeholder="Nama Lengkap"
-                        className="
-                            w-full rounded-md border border-gray-300
-                            px-4 py-2.5 text-sm
-                            focus:border-[#71C9CE]
-                            focus:ring-2 focus:ring-[#71C9CE]/30
-                            outline-none
-                        "
-                    />
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Nama Lengkap"
+                            value={data.name}
+                            onChange={(e) => setData("name", e.target.value)}
+                            className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/30 outline-none"
+                        />
+                        {errors.name && (
+                            <p className="mt-1 text-xs text-red-500">
+                                {errors.name}
+                            </p>
+                        )}
+                    </div>
                 )}
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    className="
-                        w-full rounded-md border border-gray-300
-                        px-4 py-2.5 text-sm
-                        focus:border-[#71C9CE]
-                        focus:ring-2 focus:ring-[#71C9CE]/30
-                        outline-none
-                    "
-                />
+                <div>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={data.email}
+                        onChange={(e) => setData("email", e.target.value)}
+                        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/30 outline-none"
+                    />
+                    {errors.email && (
+                        <p className="mt-1 text-xs text-red-500">
+                            {errors.email}
+                        </p>
+                    )}
+                </div>
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    className="
-                        w-full rounded-md border border-gray-300
-                        px-4 py-2.5 text-sm
-                        focus:border-[#71C9CE]
-                        focus:ring-2 focus:ring-[#71C9CE]/30
-                        outline-none
-                    "
-                />
-
-                {!isLogin && (
+                <div>
                     <input
                         type="password"
-                        placeholder="Konfirmasi Password"
-                        className="
-                            w-full rounded-md border border-gray-300
-                            px-4 py-2.5 text-sm
-                            focus:border-[#71C9CE]
-                            focus:ring-2 focus:ring-[#71C9CE]/30
-                            outline-none
-                        "
+                        placeholder="Password"
+                        value={data.password}
+                        onChange={(e) => setData("password", e.target.value)}
+                        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/30 outline-none"
                     />
+                    {errors.password && (
+                        <p className="mt-1 text-xs text-red-500">
+                            {errors.password}
+                        </p>
+                    )}
+                </div>
+
+                {!isLogin && (
+                    <div>
+                        <input
+                            type="password"
+                            placeholder="Konfirmasi Password"
+                            value={data.password_confirmation}
+                            onChange={(e) =>
+                                setData("password_confirmation", e.target.value)
+                            }
+                            className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm focus:border-[#71C9CE] focus:ring-2 focus:ring-[#71C9CE]/30 outline-none"
+                        />
+                    </div>
                 )}
 
-                {/* Primary Button */}
+                {/* Button */}
                 <button
-                    className="
-                        w-full rounded-md bg-[#71C9CE]
-                        py-2.5 text-sm font-medium text-white
-                        hover:bg-[#5bb8bd]
-                        transition
-                    "
+                    type="submit"
+                    disabled={processing}
+                    className="w-full rounded-md bg-[#71C9CE] py-2.5 text-sm font-medium text-white hover:bg-[#5bb8bd] transition disabled:opacity-60"
                 >
                     {isLogin ? "Login" : "Register"}
                 </button>
@@ -100,23 +125,26 @@ export default function AuthModal({ type = "login", show, onClose, onSwitch }) {
                 <p className="text-center text-sm text-gray-500">
                     {isLogin ? "Belum punya akun?" : "Sudah punya akun?"}{" "}
                     <button
-                        onClick={onSwitch} // panggil parent untuk ubah state
+                        type="button"
+                        onClick={() => {
+                            reset();
+                            onSwitch();
+                        }}
                         className="font-medium text-[#71C9CE] hover:underline"
                     >
                         {isLogin ? "Register" : "Login"}
                     </button>
                 </p>
-            </div>
+            </form>
 
             {/* Footer */}
             <div className="px-6 pb-6">
                 <button
-                    onClick={onClose}
-                    className="
-                        w-full text-center text-sm text-gray-400
-                        hover:text-gray-600
-                        transition
-                    "
+                    onClick={() => {
+                        reset();
+                        onClose();
+                    }}
+                    className="w-full text-center text-sm text-gray-400 hover:text-gray-600 transition"
                 >
                     Batal
                 </button>
