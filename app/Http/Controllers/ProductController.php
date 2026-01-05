@@ -67,11 +67,13 @@ class ProductController extends Controller
             // Tambah badge jika ada
             if ($request->filled('badges')) {
                 foreach ($request->badges as $badge) {
-                    $product->badges()->create([
-                        'label'    => $badge['label'] ?? '',
-                        'variant'  => $badge['variant'] ?? 'default',
-                        'position' => $badge['position'] ?? 'top-left',
-                    ]);
+                    if (!empty($badge['label'])) {
+                        $product->badges()->create([
+                            'label'    => $badge['label'],
+                            'variant'  => $badge['variant'] ?? 'default',
+                            'position' => $badge['position'] ?? 'top-left',
+                        ]);
+                    }
                 }
             }
 
@@ -109,6 +111,7 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
+            // Update product data
             $product->update([
                 'category_id'   => $request->category_id,
                 'name'          => $request->name,
@@ -120,35 +123,57 @@ class ProductController extends Controller
                 'is_flash_sale' => $request->boolean('is_flash_sale', false),
             ]);
 
-            // Update images
-            if ($request->hasFile('images')) {
-                // Hapus images lama dari storage
-                foreach ($product->images as $image) {
-                    Storage::disk('public')->delete($image->image_path);
-                }
+            // ========== HANDLE IMAGE DELETION ==========
+            // Hapus gambar lama yang ditandai untuk dihapus
+            if ($request->filled('deleted_images')) {
+                $deletedIds = $request->deleted_images;
                 
-                $product->images()->delete();
+                $imagesToDelete = $product->images()
+                    ->whereIn('id', $deletedIds)
+                    ->get();
 
+                foreach ($imagesToDelete as $image) {
+                    // Hapus file dari storage
+                    Storage::disk('public')->delete($image->image_path);
+                    // Hapus record dari database
+                    $image->delete();
+                }
+            }
+
+            // ========== HANDLE NEW IMAGE UPLOAD ==========
+            // Upload gambar baru (TIDAK menghapus gambar lama yang tidak ditandai)
+            if ($request->hasFile('images')) {
+                // Hitung jumlah gambar yang masih ada
+                $existingImagesCount = $product->images()->count();
+                
                 foreach ($request->file('images') as $index => $file) {
                     $path = $file->store('products', 'public');
 
                     $product->images()->create([
                         'image_path' => $path,
-                        'is_primary' => $index === 0,
+                        // Set sebagai primary hanya jika tidak ada gambar lama sama sekali
+                        'is_primary' => ($existingImagesCount === 0 && $index === 0) ? 1 : 0,
                     ]);
                 }
             }
 
-            // Update badges
+            // Pastikan ada minimal 1 gambar primary
+            $this->ensurePrimaryImage($product);
+
+            // ========== UPDATE BADGES ==========
             if ($request->has('badges')) {
+                // Hapus semua badge lama
                 $product->badges()->delete();
 
+                // Tambah badge baru
                 foreach ($request->badges as $badge) {
-                    $product->badges()->create([
-                        'label'    => $badge['label'] ?? '',
-                        'variant'  => $badge['variant'] ?? 'default',
-                        'position' => $badge['position'] ?? 'top-left',
-                    ]);
+                    if (!empty($badge['label'])) {
+                        $product->badges()->create([
+                            'label'    => $badge['label'],
+                            'variant'  => $badge['variant'] ?? 'default',
+                            'position' => $badge['position'] ?? 'top-left',
+                        ]);
+                    }
                 }
             }
 
@@ -163,7 +188,7 @@ class ProductController extends Controller
 
             return back()
                 ->withInput()
-                ->with('error', 'Failed to update product.');
+                ->with('error', 'Failed to update product: ' . $e->getMessage());
         }
     }
 
@@ -177,6 +202,7 @@ class ProductController extends Controller
                 Storage::disk('public')->delete($image->image_path);
             }
 
+            // Delete product (akan cascade delete images & badges jika ada foreign key constraint)
             $product->delete();
 
             DB::commit();
@@ -189,6 +215,22 @@ class ProductController extends Controller
             report($e);
 
             return back()->with('error', 'Failed to delete product.');
+        }
+    }
+
+    /**
+     * Pastikan ada minimal 1 gambar yang di-set sebagai primary
+     */
+    private function ensurePrimaryImage(Product $product)
+    {
+        $hasPrimary = $product->images()->where('is_primary', 1)->exists();
+        
+        if (!$hasPrimary) {
+            // Set gambar pertama sebagai primary
+            $firstImage = $product->images()->first();
+            if ($firstImage) {
+                $firstImage->update(['is_primary' => 1]);
+            }
         }
     }
 }
