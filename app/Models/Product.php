@@ -70,4 +70,20 @@ class Product extends Model
     {
         return $this->stock > 0;
     }
+    // Relasi ke images
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function primaryImage()
+    {
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
+    }
+
+    // Relasi ke badges
+    public function badges()
+    {
+        return $this->hasMany(ProductBadge::class);
+    }
 }
