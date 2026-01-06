@@ -1,10 +1,18 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Plus, Eye } from "lucide-react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import Table from "@/Components/Admin/Table/Table";
 import { route } from "ziggy-js";
+import { useState } from "react";
+import AdminModal from "../../../Components/modal/AdminModal";
+import ProductPreview from "./ProductPreview";
 
 export default function Index({ products }) {
+    const [previewProduct, setPreviewProduct] = useState(null);
+    const openPreview = (product) => setPreviewProduct(product);
+    const closePreview = () => setPreviewProduct(null);
+
+
     const handleDelete = (id) => {
         if (confirm("Are you sure you want to delete this product?")) {
             router.delete(route("admin.products.destroy", id));
@@ -98,15 +106,29 @@ export default function Index({ products }) {
             field: "actions",
             render: (row) => (
                 <div className="flex gap-2">
+                    {/* Preview */}
+                    <button
+                        onClick={() => openPreview(row)}
+                        className="p-2 text-gray-600 hover:bg-gray-100 rounded transition"
+                        title="Preview"
+                    >
+                        <Eye size={16} />
+                    </button>
+
+                    {/* Edit */}
                     <Link
                         href={route("admin.products.edit", row.id)}
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded transition"
+                        title="Edit"
                     >
                         <Pencil size={16} />
                     </Link>
+
+                    {/* Delete */}
                     <button
                         onClick={() => handleDelete(row.id)}
                         className="p-2 text-red-600 hover:bg-red-50 rounded transition"
+                        title="Delete"
                     >
                         <Trash2 size={16} />
                     </button>
@@ -116,38 +138,70 @@ export default function Index({ products }) {
     ];
 
     return (
-        <AdminLayout>
-            <Head title="Products Management" />
+        <>
+            <AdminLayout>
+                <Head title="Products Management" />
 
-            <div className="py-6">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Header */}
-                    <div className="flex justify-between items-center mb-6">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-800">
-                                Products Management
-                            </h1>
-                            <p className="text-sm text-gray-500 mt-1">
-                                Manage your product catalog
-                            </p>
+                <div className="py-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        {/* Header */}
+                        <div className="flex justify-between items-center mb-6">
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-800">
+                                    Products Management
+                                </h1>
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Manage your product catalog
+                                </p>
+                            </div>
+                            <Link
+                                href={route("admin.products.create")}
+                                className="flex items-center gap-2 px-4 py-2 bg-[#213448] text-white rounded-lg hover:bg-[#1a2a3a] transition"
+                            >
+                                <Plus size={20} />
+                                Add Product
+                            </Link>
                         </div>
-                        <Link
-                            href={route("admin.products.create")}
-                            className="flex items-center gap-2 px-4 py-2 bg-[#213448] text-white rounded-lg hover:bg-[#1a2a3a] transition"
-                        >
-                            <Plus size={20} />
-                            Add Product
-                        </Link>
-                    </div>
 
-                    {/* Table */}
-                    <Table
-                        columns={columns}
-                        data={products.data}
-                        pagination={products}
-                    />
+                        {/* Table */}
+                        <Table
+                            columns={columns}
+                            data={products.data}
+                            pagination={products}
+                        />
+                    </div>
                 </div>
-            </div>
-        </AdminLayout>
+            </AdminLayout>
+            <AdminModal
+                show={!!previewProduct}
+                title="Product Preview"
+                maxWidth="6xl"
+                onClose={closePreview}
+                footer={
+                    previewProduct && (
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={closePreview}
+                                className="px-5 py-2 border rounded-lg"
+                            >
+                                Close
+                            </button>
+
+                            <Link
+                                href={route(
+                                    "admin.products.edit",
+                                    previewProduct.id
+                                )}
+                                className="px-5 py-2 bg-[#213448] text-white rounded-lg"
+                            >
+                                Edit Product
+                            </Link>
+                        </div>
+                    )
+                }
+            >
+                <ProductPreview product={previewProduct} />
+            </AdminModal>
+        </>
     );
 }

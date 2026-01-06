@@ -10,10 +10,8 @@ import CategorySlider from "../Components/CategorySlider";
 import bestSellerProducts from "@/data/dummyProducts";
 import categories from "@/data/dummyCategories";
 
-export default function Home({ products, categoryList }) {
-    // 👉 fallback: backend belum ada → pakai dummy
+export default function Home({ products, categories }) {
     const bestSellers = products ?? bestSellerProducts;
-    const categoryData = categoryList ?? categories;
 
     return (
         <GuestLayout>
@@ -49,7 +47,7 @@ export default function Home({ products, categoryList }) {
             <BestSellerSlider products={bestSellers} />
 
             {/* Category */}
-            <CategorySlider categories={categoryData} />
+            <CategorySlider categories={categories} />
 
             {/* Produk Terbaru */}
             <div className="mt-10">

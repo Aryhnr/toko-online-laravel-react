@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -22,12 +23,19 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         try {
+            $iconName = null;
+
+            if ($request->hasFile('icon')) {
+                $iconName = Str::uuid() . '.' . $request->icon->extension();
+                $request->icon->storeAs('categories', $iconName, 'public');
+            }
+
             Category::create([
                 'name'        => $request->name,
                 'slug'        => Str::slug($request->name),
                 'description' => $request->description,
-                'icon'        => $request->icon,
-                'is_active'   => $request->boolean('is_active', true), // Default true jika tidak ada
+                'icon'        => $iconName,
+                'is_active'   => $request->boolean('is_active', true),
             ]);
 
             return redirect()
@@ -44,11 +52,23 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         try {
+            $iconName = $category->icon;
+
+            if ($request->hasFile('icon')) {
+                // Hapus icon lama
+                if ($category->icon && Storage::disk('public')->exists('categories/' . $category->icon)) {
+                    Storage::disk('public')->delete('categories/' . $category->icon);
+                }
+
+                $iconName = Str::uuid() . '.' . $request->icon->extension();
+                $request->icon->storeAs('categories', $iconName, 'public');
+            }
+
             $category->update([
                 'name'        => $request->name,
                 'slug'        => Str::slug($request->name),
                 'description' => $request->description,
-                'icon'        => $request->icon,
+                'icon'        => $iconName,
                 'is_active'   => $request->boolean('is_active', true),
             ]);
 
@@ -66,11 +86,15 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         try {
-            // Optional: Check jika category masih digunakan
-            if ($category->products()->exists()) {
+            if (method_exists($category, 'products') && $category->products()->exists()) {
                 return redirect()
                     ->back()
                     ->with('error', 'Cannot delete category with existing products.');
+            }
+
+            // Hapus file icon
+            if ($category->icon && Storage::disk('public')->exists('categories/' . $category->icon)) {
+                Storage::disk('public')->delete('categories/' . $category->icon);
             }
 
             $category->delete();

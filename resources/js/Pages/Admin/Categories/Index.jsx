@@ -17,16 +17,33 @@ export default function Index({ categories }) {
 
     const columns = [
         {
-            label: "Name",
-            field: "name",
+            label: "Category",
+            field: "icon",
             render: (row) => (
-                <span className="font-medium text-gray-800">{row.name}</span>
+                <div className="flex items-center gap-3">
+                    <img
+                        src={
+                            row.icon
+                                ? `/storage/categories/${row.icon}`
+                                : "/images/default-category.jpg"
+                        }
+                        alt={row.name}
+                        className="w-12 h-12 rounded-lg object-cover border"
+                        onError={(e) => {
+                            e.target.src = "/images/default-category.jpg";
+                        }}
+                    />
+
+                    <div className="flex flex-col">
+                        <span className="font-medium text-gray-800">
+                            {row.name}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                            {row.slug}
+                        </span>
+                    </div>
+                </div>
             ),
-        },
-        {
-            label: "Slug",
-            field: "slug",
-            render: (row) => <span className="text-gray-500">{row.slug}</span>,
         },
         {
             label: "Description",
@@ -34,8 +51,8 @@ export default function Index({ categories }) {
             render: (row) => (
                 <span className="text-gray-500 text-sm">
                     {row.description ? (
-                        row.description.length > 50 ? (
-                            row.description.substring(0, 50) + "..."
+                        row.description.length > 60 ? (
+                            row.description.substring(0, 60) + "..."
                         ) : (
                             row.description
                         )

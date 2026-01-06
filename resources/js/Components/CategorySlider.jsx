@@ -73,7 +73,7 @@ export default function CategorySlider({ categories }) {
                     className="px-4 sm:px-10 lg:px-14"
                 >
                     {categories.map((cat) => (
-                        <SwiperSlide key={cat.id} className="py-4">
+                        <SwiperSlide key={cat.id} className="py-3">
                             <CategoryCard category={cat} />
                         </SwiperSlide>
                     ))}

@@ -1,33 +1,73 @@
-import { Fragment } from "react";
+import { X } from "lucide-react";
 import { createPortal } from "react-dom";
 
 export default function AdminModal({
-    children,
     show = false,
+    title = "",
+    children,
+    footer = null,
     maxWidth = "2xl",
+    fullScreen = false,
     onClose = () => {},
 }) {
     if (!show) return null;
 
     const maxWidthClass = {
-        sm: "sm:max-w-sm",
-        md: "sm:max-w-md",
-        lg: "sm:max-w-lg",
-        xl: "sm:max-w-xl",
-        "2xl": "sm:max-w-2xl",
+        sm: "max-w-sm",
+        md: "max-w-md",
+        lg: "max-w-lg",
+        xl: "max-w-xl",
+        "2xl": "max-w-2xl",
+        "4xl": "max-w-4xl",
+        "6xl": "max-w-6xl",
+        full: "max-w-full",
     }[maxWidth];
 
-    // Menggunakan createPortal agar modal dirender di luar hierarchy DOM utama (opsional tapi disarankan)
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 backdrop-blur-sm p-4">
-            {/* Backdrop Click to Close */}
-            <div className="fixed inset-0" onClick={onClose}></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            {/* Backdrop */}
+            <div className="absolute inset-0" onClick={onClose} />
 
-            {/* Modal Content */}
+            {/* Modal */}
             <div
-                className={`bg-white rounded-2xl shadow-xl transform transition-all w-full ${maxWidthClass} overflow-hidden z-10 animate-in fade-in zoom-in duration-200`}
+                className={`
+                    relative z-10 w-full bg-white
+                    ${maxWidthClass}
+                    ${fullScreen ? "h-full rounded-none" : "max-h-[90vh] rounded-3xl"}
+                    flex flex-col
+                    shadow-2xl shadow-black/10
+                `}
             >
-                {children}
+                {/* HEADER */}
+                <div className="flex items-center justify-between px-6 py-4">
+                    <h2 className="text-lg font-semibold text-gray-800">
+                        {title}
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="p-2 rounded-full hover:bg-gray-100 transition"
+                    >
+                        <X className="w-5 h-5 text-gray-500" />
+                    </button>
+                </div>
+
+                {/* DIVIDER */}
+                <div className="h-px bg-gray-100" />
+
+                {/* BODY */}
+                <div className="flex-1 overflow-y-auto px-6 py-5 text-gray-700">
+                    {children}
+                </div>
+
+                {/* FOOTER */}
+                {footer && (
+                    <>
+                        <div className="h-px bg-gray-100" />
+                        <div className="px-6 py-4 bg-gray-50/60 rounded-b-3xl">
+                            {footer}
+                        </div>
+                    </>
+                )}
             </div>
         </div>,
         document.body

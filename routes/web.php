@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -20,7 +21,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 | PUBLIC (BELUM LOGIN)
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn () => Inertia::render('Home'))->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
 
 /*
 |--------------------------------------------------------------------------
