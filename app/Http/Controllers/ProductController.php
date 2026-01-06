@@ -16,7 +16,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with(['category', 'images'])
+        $products = Product::with(['category', 'images', 'badges'])
             ->latest()
             ->paginate(10);
 
