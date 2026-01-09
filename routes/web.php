@@ -22,6 +22,32 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
+/* PRODUCT */
+// Route::get('/products', [ProductController::class, 'index'])
+//     ->name('products.index');
+
+// Route::get('/products/{product}', [ProductController::class, 'show'])
+//     ->name('products.show');
+
+// /* CART */
+// Route::get('/cart', [CartController::class, 'index'])
+//     ->name('cart.index');
+
+// Route::post('/cart', [CartController::class, 'store'])
+//     ->name('cart.store');
+
+
+
+// Sementara
+Route::get('/products', function () {
+    return Inertia::render('Product/Index');
+})->name('products.index');
+
+Route::get('/products/{slug}', function ($slug) {
+    return Inertia::render('Product/Show', [
+        'slug' => $slug, // sementara, biar URL realistis
+    ]);
+})->name('products.show');
 
 
 /*
